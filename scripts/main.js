@@ -1,5 +1,5 @@
 
-
+//返回[上个月最后几天，这个月，下个月前几天]的数组
 function oneMonth(date,theMonth,theYear){
 
 	let theMonthFirstday=new Date(theMonth+"/"+"1"+"/"+theYear);
@@ -42,6 +42,7 @@ function oneMonth(date,theMonth,theYear){
 			d++;
 		}	
 		return days;
+
 	}
 
 	function getAllDays(){
@@ -49,10 +50,11 @@ function oneMonth(date,theMonth,theYear){
 		let thedays=theMonthDays();
 		let nextDays=nextMonthFirstDays();
 
+
 		let allDays=lastDays.concat(thedays,nextDays);
 		if(allDays.length<42){
-			temp=allDays.slice(-1)[0];
-			for(let i=allDays.length;i<=42;i++){
+			temp=parseInt(allDays.slice(-1)[0])+1;
+			for(let i=allDays.length;i<42;i++){
 				nextDays.push(temp);
 				temp+=1;
 			}
@@ -63,6 +65,7 @@ function oneMonth(date,theMonth,theYear){
 }
 
 
+//将这个月7*6的日历写入
 function writeMonthToCalendar(lastDays,thedays,nextDays){
 	let calendarTabel=document.getElementsByTagName("table")[0];
 	let daysBlock=calendarTabel.getElementsByTagName("td");
@@ -77,6 +80,7 @@ function writeMonthToCalendar(lastDays,thedays,nextDays){
 	}
 	for(let i=0;i<nextDays.length;i++){
 		daysBlock[i+lastDays.length+thedays.length].innerHTML=nextDays[i];
+
 		daysBlock[i+lastDays.length+thedays.length].className+="next";
 	}
 }
@@ -87,20 +91,31 @@ function YearAndMonth(){
 	let theYear=date.getFullYear();
 
 	return [date,theMonth,theYear];
-	console.log(date)
 }
 
-function initialization(){
-	let [date,theMonth,theYear]=YearAndMonth();
+//选择新的时初始化日历
+function initializationMonth(date,theMonth,theYear){
+	let days=document.getElementsByTagName("table")[0].getElementsByTagName("td");
+	for (d in days){
+		days[d].className="";
+	}
 	let [lastDays,thedays,nextDays]=oneMonth(date,theMonth,theYear);
 	writeTitleToCalendar(date,theMonth,theYear);
 	writeMonthToCalendar(lastDays,thedays,nextDays);
 }
 
+//初始化全部
+function initialization(){
+	let [date,theMonth,theYear]=YearAndMonth();
+	initializationMonth(date,theMonth,theYear);
+
+	chooseMonth();
+}
+
+//写日历的标题年月
 function writeTitleToCalendar(date,theMonth,theYear){
 	let wpheader=document.getElementsByClassName("wpheader")[0];
 	let content=wpheader.getElementsByTagName("span")[0];
-	// let [date,theMonth,theYear]=YearAndMonth();
 	if(theMonth<10) theMonth=" "+theMonth;
 	let contentStr=theYear+"年"+theMonth+"月";
 	content.innerHTML=contentStr;
@@ -111,26 +126,28 @@ function chooseMonth(){
 	let wpcontent=document.getElementsByClassName("wpcontent")[0];
 	let monthList=document.getElementsByClassName("monthList")[0];
 	let [date,theMonth,theYear]=YearAndMonth();
-	//日历改成月份选择
+	//日历标题改成月份
 	wpheader.addEventListener("click",function(){
 		wpcontent.style.display="none";
 		monthList.style.display="block";
 		wpheader.innerHTML=theYear+"年";
 	})
 
+	//点击月份显示该月日历
 	let monthes=monthList.getElementsByTagName("li");
 	for(let i=0;i<monthes.length;i++){
 		monthes[i].addEventListener("click",function(e){
 			theMonth=parseInt(e.target.innerHTML);
+			let dateNow=new Date('3/1/2018');
+			let monthNow=theMonth;
+			initializationMonth(dateNow,monthNow,theYear);
 			wpcontent.style.display="block";
 			monthList.style.display="none";
 		})
 	}
-	console.log(date)
 }
 
 
 
 initialization();
 
-chooseMonth();
