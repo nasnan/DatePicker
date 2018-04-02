@@ -1,0 +1,57 @@
+*{
+	margin: 0;
+	padding: 0;
+}
+#wrap{
+	text-align: center;
+	width: 304px;
+	height: 334px;
+    color: #606266;
+    font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimSun, sans-serif;
+    line-height: 30px;
+    position: relative;
+    left: 50%;
+    margin-left: -108px;
+    margin-top: 20px;
+    border: 1px solid #e4e7ed;
+}
+.wpcontent{
+    padding: 0px 10px 10px 10px;
+    display: block;
+}
+.wpcontent tr{
+	float: left;
+}
+.wpcontent th,.wpcontent td{
+	width: 30px;
+	height: 30px;
+	float: left;
+	padding: 5px;
+}
+.wpcontent td.last, .wpcontent td.next{
+	color: #c0c4cc;
+}
+.wpheader{
+	height: 30px;
+	padding: 10px 10px 0px 10px;
+}
+.wpheader span{
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 30px;
+    height: 30px;
+    cursor: pointer;
+}
+ul{
+	list-style-type: none;
+}
+.monthList{
+	display: none;
+}
+.monthList li{
+	float: left;
+	height: 98px;
+	width: 76px;
+	line-height: 76px;
+	cursor: pointer;
+}
