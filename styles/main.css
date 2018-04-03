@@ -45,10 +45,10 @@
 ul{
 	list-style-type: none;
 }
-.monthList{
+.monthList ,.yearList{
 	display: none;
 }
-.monthList li{
+.monthList li,.yearList li{
 	float: left;
 	height: 98px;
 	width: 76px;

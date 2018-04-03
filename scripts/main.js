@@ -72,21 +72,21 @@ function writeMonthToCalendar(lastDays,thedays,nextDays){
 
 	for(let i=0;i<lastDays.length;i++){
 		daysBlock[i].innerHTML=lastDays[i];
-		daysBlock[i].className+="last";
+		daysBlock[i].className+=" last";
 	}
 	for(let i=0;i<thedays.length;i++){
 		daysBlock[i+lastDays.length].innerHTML=thedays[i];
-		daysBlock[i+lastDays.length].className+="these";
+		daysBlock[i+lastDays.length].className+=" these";
 	}
 	for(let i=0;i<nextDays.length;i++){
 		daysBlock[i+lastDays.length+thedays.length].innerHTML=nextDays[i];
 
-		daysBlock[i+lastDays.length+thedays.length].className+="next";
+		daysBlock[i+lastDays.length+thedays.length].className+=" next";
 	}
 }
 
 function YearAndMonth(){
-	let date=new Date("4/20/2018");
+	let date=new Date();
 	let theMonth=date.getMonth()+1;
 	let theYear=date.getFullYear();
 
@@ -121,30 +121,74 @@ function writeTitleToCalendar(date,theMonth,theYear){
 	content.innerHTML=contentStr;
 }
 
+function writeYearToCalendar(theYear){
+	let wpheader=document.getElementsByClassName("wpheader")[0].getElementsByTagName("span")[0];
+	wpheader.innerHTML=theYear+"年";
+}
+
 function chooseMonth(){
 	let wpheader=document.getElementsByClassName("wpheader")[0].getElementsByTagName("span")[0];
 	let wpcontent=document.getElementsByClassName("wpcontent")[0];
 	let monthList=document.getElementsByClassName("monthList")[0];
 	let [date,theMonth,theYear]=YearAndMonth();
-	//日历标题改成月份
-	wpheader.addEventListener("click",function(){
-		wpcontent.style.display="none";
-		monthList.style.display="block";
-		wpheader.innerHTML=theYear+"年";
+
+	wpheader.addEventListener("click",function(e){
+		if(e.target.className=="yearBtn"){		//当前为月份选择时，点击标题变为年份选择
+			e.target.className="yearFixed";
+			chooseYear(wpheader,monthList);
+		}
+		else if(e.target.className=="")		//当前为日历时点击日历标题日历标题改成年份
+		{
+			wpcontent.style.display="none";
+			monthList.style.display="block";
+			writeYearToCalendar(theYear);
+			e.target.className+="yearBtn";
+		}
+		
 	})
 
 	//点击月份显示该月日历
 	let monthes=monthList.getElementsByTagName("li");
 	for(let i=0;i<monthes.length;i++){
 		monthes[i].addEventListener("click",function(e){
-			theMonth=parseInt(e.target.innerHTML);
-			let dateNow=new Date('3/1/2018');
-			let monthNow=theMonth;
-			initializationMonth(dateNow,monthNow,theYear);
+			let monthNow=parseInt(e.target.innerHTML);
+			let yearNow=parseInt(wpheader.innerHTML);
+			let dateNow=new Date(monthNow-1+"/1/"+yearNow);
+			initializationMonth(dateNow,monthNow,yearNow);
 			wpcontent.style.display="block";
 			monthList.style.display="none";
+			wpheader.className="";
 		})
 	}
+}
+
+
+function chooseYear(wpheader,monthList){
+	let theYear=parseInt(wpheader.innerHTML);
+	let yearList=document.getElementsByClassName("yearList")[0];
+	let years=yearList.getElementsByTagName("li");
+	let yearA=parseInt(theYear/10)*10;
+	let yearB=yearA+9;
+
+	wpheader.innerHTML=yearA+" - "+yearB;
+	monthList.style.display="none";
+	yearList.style.display="block";
+	// wpheader.className="";
+
+	for(let i=0;i<years.length;i++){
+		years[i].innerHTML=yearA+i;
+
+		//当前为年份选择时，点击年份显示月份选择
+		years[i].addEventListener("click",function(e){
+			wpheader.className="yearBtn";
+			let yearNow=e.target.innerHTML;
+			writeYearToCalendar(yearNow);
+			yearList.style.display="none";
+			monthList.style.display="block";
+			chooseMonth();
+		})
+	}
+
 }
 
 
