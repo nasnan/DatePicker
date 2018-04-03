@@ -1,7 +1,6 @@
 
 //返回[上个月最后几天，这个月，下个月前几天]的数组
 function oneMonth(date,theMonth,theYear){
-
 	let theMonthFirstday=new Date(theMonth+"/"+"1"+"/"+theYear);
 	let theMonthLastday=new Date(theYear,theMonth,0);
 	let theMonthFirstdayWeek=theMonthFirstday.getDay();
@@ -11,8 +10,8 @@ function oneMonth(date,theMonth,theYear){
 	let lastMonthLastday=new Date(theYear,theMonth-1,0);
 
 	let nextMonthToday=new Date(date.setMonth(theMonth));
+	nextMonthToday=new Date(date.setYear(theYear));
 	let nextMonthFirstDay=new Date((nextMonthToday.getMonth()+1)+"/1/"+(nextMonthToday.getFullYear()));
-
 
 
 	function lastMonthLastDays(){	//返回上个月最后几天
@@ -35,7 +34,7 @@ function oneMonth(date,theMonth,theYear){
 	}
 
 	function nextMonthFirstDays(){	//下个月开头几天
-		days=[];
+		let days=[];
 		let d=1;
 		for(let i=7;i>=nextMonthFirstDay.getDay();i--){
 			days.push(d);
@@ -49,7 +48,6 @@ function oneMonth(date,theMonth,theYear){
 		let lastDays=lastMonthLastDays();
 		let thedays=theMonthDays();
 		let nextDays=nextMonthFirstDays();
-
 
 		let allDays=lastDays.concat(thedays,nextDays);
 		if(allDays.length<42){
@@ -108,6 +106,7 @@ function initializationMonth(date,theMonth,theYear){
 function initialization(){
 	let [date,theMonth,theYear]=YearAndMonth();
 	initializationMonth(date,theMonth,theYear);
+	buttonChoose(date,theMonth,theYear);
 
 	chooseMonth();
 }
@@ -130,6 +129,8 @@ function chooseMonth(){
 	let wpheader=document.getElementsByClassName("wpheader")[0].getElementsByTagName("span")[0];
 	let wpcontent=document.getElementsByClassName("wpcontent")[0];
 	let monthList=document.getElementsByClassName("monthList")[0];
+	let monthbtn=document.getElementsByClassName("monthbtn");
+
 	let [date,theMonth,theYear]=YearAndMonth();
 
 	wpheader.addEventListener("click",function(e){
@@ -143,6 +144,9 @@ function chooseMonth(){
 			monthList.style.display="block";
 			writeYearToCalendar(theYear);
 			e.target.className+="yearBtn";
+			monthbtn[0].style.display="none";
+			monthbtn[1].style.display="none";
+
 		}
 		
 	})
@@ -158,6 +162,8 @@ function chooseMonth(){
 			wpcontent.style.display="block";
 			monthList.style.display="none";
 			wpheader.className="";
+			monthbtn[0].style.display="block";
+			monthbtn[1].style.display="block";
 		})
 	}
 }
@@ -173,7 +179,7 @@ function chooseYear(wpheader,monthList){
 	wpheader.innerHTML=yearA+" - "+yearB;
 	monthList.style.display="none";
 	yearList.style.display="block";
-	// wpheader.className="";
+
 
 	for(let i=0;i<years.length;i++){
 		years[i].innerHTML=yearA+i;
@@ -191,6 +197,43 @@ function chooseYear(wpheader,monthList){
 
 }
 
+function buttonChoose(date,theMonth,theYear){
+	let wpheader=document.getElementsByClassName("wpheader")[0].getElementsByTagName("span")[0];
+	let monthbefore=document.getElementsByClassName("monthbefore")[0];
+	let monthafter=document.getElementsByClassName("monthafter")[0];
+	let yearbefore=document.getElementsByClassName("yearbefore")[0];
+	let yearafter=document.getElementsByClassName("yearafter")[0];
+	let monthNow=theMonth;
+	let yearNow=theYear;
+	monthbefore.addEventListener("click",function(){
+		if(monthNow>1) monthNow-=1;
+		else{
+			monthNow=12;
+			yearNow-=1;
+		}
+		initializationMonth(date,monthNow,yearNow);
+	});
+	monthafter.addEventListener("click",function(){
+		if(monthNow<12)	monthNow+=1;
+		else{
+			monthNow=1;
+			yearNow+=1;
+		}
+		initializationMonth(date,monthNow,yearNow);
+	});
+
+	//当前为日历时
+	if(wpheader.className==""){
+		yearbefore.addEventListener("click",function(){
+			yearNow-=1;
+			initializationMonth(date,monthNow,yearNow);
+		});
+		yearafter.addEventListener("click",function(){
+			yearNow+=1;
+			initializationMonth(date,monthNow,yearNow);
+		});
+	}
+}
 
 
 initialization();

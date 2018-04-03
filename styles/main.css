@@ -55,3 +55,33 @@ ul{
 	line-height: 76px;
 	cursor: pointer;
 }
+.wpheader span:hover, .wpcontent .these:hover, .monthList li:hover, .yearList li:hover, button:hover{
+	color: #409eff;
+}
+.wpheader button{
+	border: 0px;
+	background-color: transparent;
+	outline: none;
+	cursor: pointer;
+   	line-height: 30px;
+   	margin: 0px 5px 0px 5px;
+}
+.yearbefore:before{
+	content: "<<";
+}
+.yearbefore, .monthbefore{
+	float: left; 
+ 
+}
+.monthbefore:before{
+	content: "<";
+}
+.yearafter:before{
+	content: ">>";
+}
+.yearafter, .monthafter{
+	float: right;
+}
+.monthafter:before{
+	content: ">";
+}
