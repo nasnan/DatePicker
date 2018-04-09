@@ -35,7 +35,7 @@ body{
 }
 .wpheader{
 	height: 30px;
-	padding: 10px 10px 0px 10px;
+	padding: 10px 10px 5px 10px;
 }
 .wpheader span{
     font-size: 18px;
