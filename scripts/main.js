@@ -1,4 +1,5 @@
 
+
 //返回[上个月最后几天，这个月，下个月前几天]的数组
 function oneMonth(date,theMonth,theYear){
 	let theMonthFirstday=new Date(theMonth+"/"+"1"+"/"+theYear);
@@ -8,11 +9,7 @@ function oneMonth(date,theMonth,theYear){
 	let theMonthLastdayWeek=theMonthLastday.getDay();
 
 	let lastMonthLastday=new Date(theYear,theMonth-1,0);
-
-	let nextMonthToday=new Date(date.setMonth(theMonth));
-	nextMonthToday=new Date(date.setYear(theYear));
-	let nextMonthFirstDay=new Date((nextMonthToday.getMonth()+1)+"/1/"+(nextMonthToday.getFullYear()));
-
+	let nextMonthFirstDay=new Date(theYear,theMonth,1);
 
 	function lastMonthLastDays(){	//返回上个月最后几天
 		let tempLastDays=lastMonthLastday.getDate();
@@ -65,6 +62,7 @@ function oneMonth(date,theMonth,theYear){
 
 //将这个月7*6的日历写入
 function writeMonthToCalendar(lastDays,thedays,nextDays){
+
 	let calendarTabel=document.getElementsByTagName("table")[0];
 	let daysBlock=calendarTabel.getElementsByTagName("td");
 
@@ -83,12 +81,21 @@ function writeMonthToCalendar(lastDays,thedays,nextDays){
 	}
 }
 
-function YearAndMonth(){
-	let date=new Date();
-	let theMonth=date.getMonth()+1;
-	let theYear=date.getFullYear();
-
+function YearAndMonth(flag){
+	let date,theMonth,theYear;
+	if (flag==true){
+		date=new Date();
+		theMonth=date.getMonth()+1;
+		theYear=date.getFullYear();
+	}
+	else{
+		let wpheader=document.getElementsByClassName("wpheader")[0].getElementsByTagName("span")[0];
+		theYear=parseInt(wpheader.innerHTML);
+		theMonth=parseInt(wpheader.innerHTML.slice(-3,-1));
+		date=new Date(theYear,theMonth-1,1)
+	}
 	return [date,theMonth,theYear];
+
 }
 
 //选择新的时初始化日历
@@ -104,9 +111,10 @@ function initializationMonth(date,theMonth,theYear){
 
 //初始化全部
 function initialization(){
-	let [date,theMonth,theYear]=YearAndMonth();
+	let [date,theMonth,theYear]=YearAndMonth(true);
+	// var [testdate,testtheMonth,testtheYear]=[date,theMonth,theYear];
 	initializationMonth(date,theMonth,theYear);
-	buttonChoose(date,theMonth,theYear);
+	buttonChoose();
 
 	chooseMonth();
 }
@@ -131,8 +139,6 @@ function chooseMonth(){
 	let monthList=document.getElementsByClassName("monthList")[0];
 	let monthbtn=document.getElementsByClassName("monthbtn");
 
-	let [date,theMonth,theYear]=YearAndMonth();
-
 	wpheader.addEventListener("click",function(e){
 		if(e.target.className=="yearBtn"){		//当前为月份选择时，点击标题变为年份选择
 			e.target.className="yearFixed";
@@ -140,6 +146,7 @@ function chooseMonth(){
 		}
 		else if(e.target.className=="")		//当前为日历时点击日历标题日历标题改成年份
 		{
+			let [date,theMonth,theYear]=YearAndMonth(false);
 			wpcontent.style.display="none";
 			monthList.style.display="block";
 			writeYearToCalendar(theYear);
@@ -168,19 +175,25 @@ function chooseMonth(){
 	}
 }
 
-
+//年份选择
 function chooseYear(wpheader,monthList){
 	let theYear=parseInt(wpheader.innerHTML);
 	let yearList=document.getElementsByClassName("yearList")[0];
-	let years=yearList.getElementsByTagName("li");
-	let yearA=parseInt(theYear/10)*10;
-	let yearB=yearA+9;
-
-	wpheader.innerHTML=yearA+" - "+yearB;
+	
 	monthList.style.display="none";
 	yearList.style.display="block";
 
+	changeYears(wpheader,theYear);
 
+}
+
+function changeYears(wpheader,theYear){
+	let yearList=document.getElementsByClassName("yearList")[0];
+	let monthList=document.getElementsByClassName("monthList")[0];
+	let years=yearList.getElementsByTagName("li");
+	let yearA=parseInt(theYear/10)*10;
+	let yearB=yearA+9;
+	wpheader.innerHTML=yearA+" - "+yearB;
 	for(let i=0;i<years.length;i++){
 		years[i].innerHTML=yearA+i;
 
@@ -194,45 +207,79 @@ function chooseYear(wpheader,monthList){
 			chooseMonth();
 		})
 	}
-
 }
 
-function buttonChoose(date,theMonth,theYear){
+
+function buttonChoose(){
 	let wpheader=document.getElementsByClassName("wpheader")[0].getElementsByTagName("span")[0];
 	let monthbefore=document.getElementsByClassName("monthbefore")[0];
 	let monthafter=document.getElementsByClassName("monthafter")[0];
 	let yearbefore=document.getElementsByClassName("yearbefore")[0];
 	let yearafter=document.getElementsByClassName("yearafter")[0];
-	let monthNow=theMonth;
-	let yearNow=theYear;
+	let monthList=document.getElementsByClassName("monthList")[0];
+
 	monthbefore.addEventListener("click",function(){
-		if(monthNow>1) monthNow-=1;
+		let [date,theMonth,theYear]=YearAndMonth(false);
+		
+		if(theMonth>1) theMonth-=1;
 		else{
-			monthNow=12;
-			yearNow-=1;
+			theMonth=12;
+			theYear-=1;
 		}
-		initializationMonth(date,monthNow,yearNow);
+		initializationMonth(date,theMonth,theYear);
 	});
 	monthafter.addEventListener("click",function(){
-		if(monthNow<12)	monthNow+=1;
+		let [date,theMonth,theYear]=YearAndMonth(false);
+		if(theMonth<12)	theMonth+=1;
 		else{
-			monthNow=1;
-			yearNow+=1;
+			theMonth=1;
+			theYear+=1;
 		}
-		initializationMonth(date,monthNow,yearNow);
+		initializationMonth(date,theMonth,theYear);
 	});
 
 	//当前为日历时
-	if(wpheader.className==""){
-		yearbefore.addEventListener("click",function(){
-			yearNow-=1;
-			initializationMonth(date,monthNow,yearNow);
-		});
-		yearafter.addEventListener("click",function(){
-			yearNow+=1;
-			initializationMonth(date,monthNow,yearNow);
-		});
-	}
+	// if(wpheader.className==""){
+	// 	yearbefore.addEventListener("click",function(){
+	// 		yearNow-=1;
+	// 		initializationMonth(date,monthNow,yearNow);
+	// 	});
+	// 	yearafter.addEventListener("click",function(){
+	// 		yearNow+=1;
+	// 		initializationMonth(date,monthNow,yearNow);
+	// 	});
+	// }
+	yearbefore.addEventListener("click",function(){
+		let [date,theMonth,theYear]=YearAndMonth(false);
+		if(wpheader.className==""){
+			theYear-=1;
+			initializationMonth(date,theMonth,theYear);
+		}
+		else if(wpheader.className=="yearBtn"){
+			theYear-=1;
+			writeYearToCalendar(theYear);
+		}
+		else if(wpheader.className=="yearFixed"){
+			theYear-=10;
+			changeYears(wpheader,theYear);
+		}
+	});
+	yearafter.addEventListener("click",function(){
+		let [date,theMonth,theYear]=YearAndMonth(false);
+		if(wpheader.className==""){
+			theYear+=1;
+			initializationMonth(date,theMonth,theYear);
+		}
+		else if(wpheader.className=="yearBtn"){
+			theYear+=1;
+			writeYearToCalendar(theYear);
+		}
+		else if(wpheader.className=="yearFixed"){
+			theYear+=10;
+			changeYears(wpheader,theYear);
+		}
+	})
+
 }
 
 
