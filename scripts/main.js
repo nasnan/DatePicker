@@ -79,6 +79,30 @@ function writeMonthToCalendar(lastDays,thedays,nextDays){
 
 		daysBlock[i+lastDays.length+thedays.length].className+=" next";
 	}
+	returnDate(daysBlock);
+}
+
+function returnDate(daysBlock){
+	let  [date,theMonth,theYear]=YearAndMonth(false);
+	if(theMonth<=9) theMonth="0"+theMonth;
+	let theDay;
+	let dateFinally;
+	for(let i=0;i<daysBlock.length;i++){
+		daysBlock[i].addEventListener("click",function(e){
+			theDay=e.target.innerHTML;
+			if(theDay.length==1) theDay="0"+theDay;
+			dateFinally=theYear+"-"+theMonth+"-"+theDay;
+			writeToTextBtn(dateFinally);
+		})
+	}
+}
+
+function writeToTextBtn(dateFinally){
+	let chooseDate=document.getElementById("chooseDate");
+	let warp=document.getElementById("wrap");
+	chooseDate.value=dateFinally;
+	wrap.style.display="none";
+
 }
 
 function YearAndMonth(flag){
@@ -112,7 +136,6 @@ function initializationMonth(date,theMonth,theYear){
 //初始化全部
 function initialization(){
 	let [date,theMonth,theYear]=YearAndMonth(true);
-	// var [testdate,testtheMonth,testtheYear]=[date,theMonth,theYear];
 	initializationMonth(date,theMonth,theYear);
 	buttonChoose();
 
@@ -238,17 +261,6 @@ function buttonChoose(){
 		initializationMonth(date,theMonth,theYear);
 	});
 
-	//当前为日历时
-	// if(wpheader.className==""){
-	// 	yearbefore.addEventListener("click",function(){
-	// 		yearNow-=1;
-	// 		initializationMonth(date,monthNow,yearNow);
-	// 	});
-	// 	yearafter.addEventListener("click",function(){
-	// 		yearNow+=1;
-	// 		initializationMonth(date,monthNow,yearNow);
-	// 	});
-	// }
 	yearbefore.addEventListener("click",function(){
 		let [date,theMonth,theYear]=YearAndMonth(false);
 		if(wpheader.className==""){
@@ -282,6 +294,17 @@ function buttonChoose(){
 
 }
 
+function showDatePicker(){
+	initialization();
 
-initialization();
+	let chooseDate=document.getElementById("chooseDate");
+	let warp=document.getElementById("wrap");
+	chooseDate.addEventListener("click",function(){
+		wrap.style.display="block";
+	})
+}
+
+
+showDatePicker();
+
 
